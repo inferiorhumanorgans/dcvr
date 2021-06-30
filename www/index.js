@@ -265,7 +265,7 @@ class BrowserSide {
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
         // const long_side = 525;
-        const long_side = 800;
+        const long_side = 1024;
         const output_mime_type = 'image/png';
     
         canvas.width = img.width;
