@@ -5,4 +5,10 @@ Herein lies a project that decodes the QR codes given out by California's Depart
 
 QR barcodes from other companies and public health agencies (e.g. Québec Ministry of Health and Social Services, UCSD, Get Real Health, Epic, etc.) are compatible so long as they adhere to the SMART Health Card specification.
 
+![Simplified results](../screenshots/01-overview.png?raw=true)
+
+![Detailed results](../screenshots/02-detail.png?raw=true)
+
+![Detailed results](../screenshots/03-detail.png?raw=true)
+
 https://inferiorhumanorgans.github.io/dcvr/
