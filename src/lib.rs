@@ -19,46 +19,13 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 // In days
 const WAITING_PERIOD : i32 = 14;
 
-use shc::{SmartHealthCard, Coding};
+use shc::{SmartHealthCard, Immunization};
 
 trait ImmunizationWasm {
-    fn code(&self) -> String;
-    fn occurrence(&self) -> String;
     fn provider(&self) -> String;
-    fn completed(&self) -> bool;
-    fn is_two_dose(&self) -> Option<bool>;
 }
 
-impl ImmunizationWasm for shc::Immunization<'static> {
-    fn code(&self) -> String {
-        self.vaccine_code.to_string()
-    }
-
-    // The Biontech and Moderna vaccines require two jabs, assume the others require only one
-    fn is_two_dose(&self) -> Option<bool> {
-        // ugh constants
-        let pfizer_code : Coding = Coding::from_uri_and_code("http://hl7.org/fhir/sid/cvx", "208");
-        let moderna_code : Coding = Coding::from_uri_and_code("http://hl7.org/fhir/sid/cvx", "207");
-
-        match self.vaccine_code.coding.len() {
-            1 => {
-                let code = &self.vaccine_code.coding[0];
-                if code == &pfizer_code {
-                    Some(true)
-                } else if code == &moderna_code {
-                    Some(true)
-                } else {
-                    Some(false)
-                }
-            },
-            _ => None
-        }
-    }
-
-    fn occurrence(&self) -> String {
-        self.occurrence.to_string()
-    }
-
+impl ImmunizationWasm for Immunization<'static> {
     fn provider(&self) -> String {
         match self.performer.len() {
             0 => "UNKNOWN".into(),
@@ -66,9 +33,6 @@ impl ImmunizationWasm for shc::Immunization<'static> {
         }
     }
 
-    fn completed(&self) -> bool {
-        self.status == shc::ImmunizationStatus::Completed
-    }
 }
 
 #[wasm_bindgen]
@@ -189,9 +153,12 @@ impl Universe {
     // Parses a base64 encoded image
     // lol working around lack of marshalling for Result type
     pub fn parse(&mut self, encoded: &str) -> Option<String> {
-        let data = base64::decode(encoded).unwrap();
+        let data = match base64::decode(encoded) {
+            Ok(data) => data,
+            Err(err) => return Some(err.to_string()),
+        };
 
-        match shc::shc_parse_qr_image(&data, false, &None) {
+        match shc::shc_parse_qr_image(&data, false) {
             Ok((jwt, ehc, kid)) => {
                 self.data = jwt;
                 self.kid = kid;
@@ -305,11 +272,11 @@ impl Universe {
     }
 
     pub fn imm_code(&self, index: usize) -> String {
-        self.immunizations[index].code()
+        self.immunizations[index].vaccine_code.to_string()
     }
 
     pub fn imm_occurrence(&self, index: usize) -> String {
-        self.immunizations[index].occurrence()
+        self.immunizations[index].occurrence.to_string()
     }
 
     pub fn imm_provider(&self, index: usize) -> String {
@@ -317,7 +284,7 @@ impl Universe {
     }
 
     pub fn imm_lot(&self, index: usize) -> String {
-        self.immunizations[index].lot_number.clone().unwrap_or("UNKNOWN".into())
+        self.immunizations[index].lot_number.clone().unwrap_or("UNKNOWN_LOT".into())
     }
 
     pub fn imm_completed(&self, index: usize) -> bool {
@@ -333,8 +300,8 @@ impl Universe {
             .map(|imm| {
                 VaxDetail {
                     mark: match imm.completed() { true => "green".into(), false => "red".into() },
-                    code: imm.code(),
-                    date: imm.occurrence(),
+                    code: imm.vaccine_code.to_string(),
+                    date: imm.occurrence.to_string(),
                     location: imm.provider(),
                     lot: match imm.lot_number.as_ref() { Some(lot) => lot.clone(), None => "UNKNOWN".into() }
                 }
