@@ -158,7 +158,7 @@ class BrowserSide {
     
         meta.is_cadph = universe.issuer_is_calif_dph();
         if (meta.is_cadph === false) {
-            meta.status.push({mark: 'red', text: 'Not issued by the California Department of Health'})
+            meta.status.push({mark: 'red', text: 'Not issued by the California Department of Public Health'})
             
             BrowserSide.update_table(template(meta, handlebar_props));
             BrowserSide.update_status();
@@ -225,13 +225,13 @@ class BrowserSide {
     
                         if (isSignValid === false) {
                             meta.valid_sig = false;
-                            meta.status.push({mark: 'red', text: 'Not issued by the California Department of Health'})
+                            meta.status.push({mark: 'red', text: 'Not issued by the California Department of Public Health'})
                         } else if ((isSignValid === true) && (key_match === false)) {
                             meta.valid_sig = false;
-                            meta.status.push({mark: 'yellow', text: 'Potentially issued by the California Department of Health, key thumbprint mismatch'})
+                            meta.status.push({mark: 'yellow', text: 'Potentially issued by the California Department of Public Health, key thumbprint mismatch'})
                         } else if ((isSignValid === true) && (key_match === true)) {
                             meta.valid_sig = true;
-                            meta.status.push({mark: 'green', text: 'Issued by the California Department of Health'})
+                            meta.status.push({mark: 'green', text: 'Issued by the California Department of Public Health'})
                         }
                     }
                     return(meta);
