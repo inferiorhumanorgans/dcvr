@@ -1,4 +1,6 @@
 import * as wasm from 'shc-wasm';
+import './index.css';
+
 const Handlebars = require('handlebars');
 // At this point it's kind of a question of why use rust at all?
 import { KJUR, b64utohex } from 'jsrsasign';
