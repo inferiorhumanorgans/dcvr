@@ -3,6 +3,8 @@ const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const NODE_ENV = process.env.NODE_ENV || "development";
+const NODE_ADDR = process.env.NODE_ADDR || "127.0.0.1";
+const NODE_PORT = process.env.NODE_PORT || 8080;
 
 console.log(`Node environment: ${NODE_ENV}`);
 
@@ -13,8 +15,8 @@ let export_meta = {
     filename: "bootstrap.js",
   },
   devServer: {
-    port: 8080,
-    host: '0.0.0.0'
+    port: NODE_PORT,
+    host: NODE_ADDR,
   },
   mode: NODE_ENV,
   plugins: [
