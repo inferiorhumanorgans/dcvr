@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>DCVR Decoder</title>
+    <meta name='viewport' content='width=device-width, initial-scale=0.8' />
+    <style type='text/css'>
+        html, body, * {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;   
+        }
+
+        body, html, a, a:visited {
+            background-color: #272727;
+            color: white;
+            text-shadow: rgba(0, 0, 0, 0.25) 0px 2px 0px;
+        }
+
+        body {
+            padding: 12px;
+        }
+
+        a {
+            background-color: rgba(0,0,0,0) !important;
+        }
+
+        form {
+            margin-bottom: 1em;
+        }
+
+        .note {
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            text-shadow: none;
+            background-color: rgb(58, 58, 58) !important;
+            padding: 12px;
+            width: 75%;
+            font-size: 10pt;
+        }
+
+        #status {
+            display: none;
+            margin-top: 1em;
+        }
+
+        .vax-status {
+            font-size: 24pt !important;
+            padding-left: 12px;
+            padding-right: 12px;
+            width: 75%;
+        }
+
+        .vax-lot {
+            text-overflow: ellipsis !important;
+            overflow-x: hidden;
+        }
+
+        #vax-container {
+            width: 75%;
+        }
+        #vax {
+            background-color: rgb(50, 50, 50);
+            text-shadow: none;
+            width: calc(100% + 24px);
+            table-layout: fixed;
+            margin-top: 1em;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+        }
+
+        @media (max-device-width: 630px) {
+            .note, #vax-container {
+                width: 95%;
+            }
+        }
+
+        .vax-table {
+            visibility: hidden;
+        }
+
+        .vax-table td {
+            font-family: Consolas, 'Liberation Mono', Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+            font-size: 12pt;
+            color: rgb(171, 178, 191);
+        }
+
+        .patient {
+            background-color: rgb(58, 58, 58) !important;
+        }
+
+        .patient.name {
+            padding: 0.25em;
+        }
+
+        .record {
+            border-collapse: collapse;
+            border: 0px solid black;
+            width: 98%;
+            margin: 0.125em;
+            font-size: 12pt;
+        }
+
+        .cl-normal {
+            color: rgb(84, 85, 87);
+        }
+        .cl-red {
+            color: rgb(224, 108, 117) !important;
+        }
+        .cl-blue {
+            color: rgb(97, 175, 239) !important;
+        }
+        .cl-green {
+            color: rgb(152, 195, 121) !important;
+        }
+        .cl-yellow {
+            color: rgb(229, 192, 123) !important;
+        }
+        tr.smile_status > td {
+            font-size: 48pt;
+            text-align: center;
+        }
+
+        tr.detail_status, tr.smile_status {
+            display: none; /* Safari is broken and doesn't support visibility:collapse */
+            visibility: collapse;
+            opacity: 0;
+        }
+
+        tr.detail_status.active,
+        tr.smile_status.active {
+            display: table-row; /* Safari is broken and doesn't support visibility:collapse */
+            visibility: visible;
+            opacity: 1;
+        }
+        
+    </style>
+  </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <canvas style='display: none' id='canvas'></canvas>
+    <form action='#' onsubmit='return false'>
+        <input type='file' id='imgfile' />
+    </form>
+    <div id='loading' class='note'>This site decodes a
+        <a href='https://cdt.ca.gov/news/california-launches-new-digital-tool-giving-residents-convenient-access-to-their-covid-19-vaccine-record/' target='_blank'>Digital COVID-19 Vaccination Record</a>
+        from the <a href='https://myvaccinerecord.cdph.ca.gov/faq' target='_blank'>California Department of Health</a>. 
+        Request yours <a href='https://myvaccinerecord.cdph.ca.gov/' target='_blank'>here</a>.
+        <br><br>
+        If you are using Firefox and this site is not working properly, ensure the "<a href='https://support.mozilla.org/en-US/kb/firefox-protection-against-fingerprinting' target='_blank'>use HTML5 canvas image data</a>"
+        permission has been granted and reload.</div>
+    <div id='status' class='note'></div>
+    <div id='vax-container'>
+        <table class='vax-table' id='vax'>
+            <colgroup>
+                <col span='1' style='width: 48px'>
+                <col span='1' style='width: 8em'>
+                <col span='1' style='width: 100%'>
+             </colgroup>
+             <tbody id='vax-body'>
+             </tbody>
+        </table>
+        </div>
+    <script src='./bootstrap.js'></script>
+    <script type='text/javascript'>
+        // https://stackoverflow.com/questions/13938686/can-i-load-a-local-file-into-an-html-canvas-element
+        // http://jsfiddle.net/z3JtC/4
+        // Trigger a read canvas thing to get firefox to display the permissions knob before any user action
+        document.getElementById('canvas').toDataURL('image/png');
+        document.getElementById('imgfile').value = '';
+    </script>
+  </body>
+</html>
