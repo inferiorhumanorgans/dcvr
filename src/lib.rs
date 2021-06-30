@@ -29,12 +29,12 @@ trait ImmunizationWasm {
     fn is_two_dose(&self) -> Option<bool>;
 }
 
-
 impl ImmunizationWasm for shc::Immunization<'static> {
     fn code(&self) -> String {
         self.vaccine_code.to_string()
     }
 
+    // The Biontech and Moderna vaccines require two jabs, assume the others require only one
     fn is_two_dose(&self) -> Option<bool> {
         // ugh constants
         let pfizer_code : Coding = Coding::from_uri_and_code("http://hl7.org/fhir/sid/cvx", "208");
@@ -54,6 +54,7 @@ impl ImmunizationWasm for shc::Immunization<'static> {
             _ => None
         }
     }
+
     fn occurrence(&self) -> String {
         self.occurrence.to_string()
     }
@@ -170,10 +171,6 @@ pub struct Universe {
     issuer: Option<shc::Issuer>,
     kid: Option<String>,
     data: String,
-}
-
-impl Universe {
-
 }
 
 #[wasm_bindgen]
@@ -345,29 +342,8 @@ impl Universe {
             .into_iter()
             .map(JsValue::from)
             .collect()
-        /*
-       for (let i=0; i < universe.imm_count(); i++) {
-            let mark;
-            if (universe.imm_completed(i) === true) {
-                completed++;
-                mark = 'green';
-                if (universe.imm_is_two_dose(i) === true) {
-                    isTwoDose = true;
-                }
-            } else {
-                // Entered in error OR not done
-                mark = 'red';
-            }
-            meta.vax.push({
-                mark,
-                code: universe.imm_code(i),
-                date: universe.imm_occurrence(i),
-                location: universe.imm_provider(i),
-                lot: universe.imm_lot(i)
-            });
-        }
-        */
     }
+
     pub fn vax_status(&self) -> Option<StatusEntry> {
         if self.immunizations.is_empty() {
             return None
