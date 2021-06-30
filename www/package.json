@@ -1,18 +1,15 @@
 {
   "name": "shc-wasm",
   "version": "0.1.0",
-  "description": "create an app to consume rust-generated wasm packages",
+  "description": "Decode and validate California Digital COVID-19 Vaccine Records",
   "main": "index.js",
-  "bin": {
-    "create-wasm-app": ".bin/create-wasm-app.js"
-  },
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/inferiorhumanorgans/shc-wasm.git"
+    "url": "git+https://github.com/inferiorhumanorgans/dcvr.git"
   },
   "keywords": [
     "webassembly",
@@ -23,9 +20,9 @@
   "author": "author",
   "license": "GPL-3",
   "bugs": {
-    "url": "https://github.com/inferiorhumanorgans/shc-wasm/issues"
+    "url": "https://github.com/inferiorhumanorgans/dcvr/issues"
   },
-  "homepage": "https://github.com/inferiorhumanorgans/shc-wasm",
+  "homepage": "https://inferiorhumanorgans.github.io/dcvr/",
   "dependencies": {
     "handlebars": "^4.7.7",
     "jsrsasign": "^10.3.0",
