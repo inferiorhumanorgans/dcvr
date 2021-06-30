@@ -2,7 +2,6 @@ const CopyWebpackPlugin = require("copy-webpack-plugin");
 const path = require('path');
 
 // Minifiers
-const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 
@@ -24,7 +23,9 @@ let export_meta = {
   },
   mode: NODE_ENV,
   plugins: [
-    new CopyWebpackPlugin(['index.html']),
+    new CopyWebpackPlugin({
+        patterns: ['index.html']
+    }),
     new MiniCssExtractPlugin(),
   ],
   module: {
@@ -34,6 +35,9 @@ let export_meta = {
             use: [MiniCssExtractPlugin.loader, "css-loader"],
           }
       ]
+  },
+  experiments: {
+    asyncWebAssembly: true,
   }
 };
 
@@ -41,14 +45,7 @@ if (NODE_ENV === 'production') {
     export_meta.optimization = {
         minimizer: [
             new CssMinimizerPlugin(),
-            new TerserPlugin({
-                // Use multi-process parallel running to improve the build speed
-                // Default number of concurrent runs: os.cpus().length - 1
-                parallel: true,
-                // Enable file caching
-                // cache: true,
-                sourceMap: true,
-            }),
+            '...',
         ],
     }
 }
