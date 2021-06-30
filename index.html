@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <title>DCVR Decoder</title>
+    <meta name='viewport' content='width=device-width, initial-scale=0.8' />
+    <style type='text/css'>
+        html, body, * {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'Lucida Grande', sans-serif;
+        }
+
+        body, html, a, a:visited {
+            background-color: #272727;
+            color: white;
+            text-shadow: rgba(0, 0, 0, 0.25) 0px 2px 0px;
+        }
+    </style>
+  </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <canvas style='display: none' id='canvas'></canvas>
+    <form action='#' onsubmit='return false'>
+        <input type='file' id='imgfile' />
+    </form>
+    <div id='loading' class='note'>This site decodes a
+        <a href='https://cdt.ca.gov/news/california-launches-new-digital-tool-giving-residents-convenient-access-to-their-covid-19-vaccine-record/' target='_blank'>Digital COVID-19 Vaccination Record</a>
+        from the <a href='https://myvaccinerecord.cdph.ca.gov/faq' target='_blank'>California Department of Health</a>. 
+        Request yours <a href='https://myvaccinerecord.cdph.ca.gov/' target='_blank'>here</a>.
+        <br><br>
+        If you are using Firefox and this site is not working properly, ensure the "<a href='https://support.mozilla.org/en-US/kb/firefox-protection-against-fingerprinting' target='_blank'>use HTML5 canvas image data</a>"
+        permission has been granted and reload.</div>
+    <div id='status' class='note'></div>
+    <div id='vax-container'>
+        <table class='vax-table' id='vax'>
+            <colgroup>
+                <col span='1' style='width: 48px'>
+                <col span='1' style='width: 8em'>
+                <col span='1' style='width: 100%'>
+             </colgroup>
+             <tbody id='vax-body'>
+             </tbody>
+        </table>
+        </div>
+    <script src='./bootstrap.js'></script>
+    <script type='text/javascript'>
+        // https://stackoverflow.com/questions/13938686/can-i-load-a-local-file-into-an-html-canvas-element
+        // http://jsfiddle.net/z3JtC/4
+        // Trigger a read canvas thing to get firefox to display the permissions knob before any user action
+        document.getElementById('canvas').toDataURL('image/png');
+        document.getElementById('imgfile').value = '';
+    </script>
+  </body>
+</html>
